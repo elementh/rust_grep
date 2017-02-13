@@ -10,7 +10,7 @@
       <excludeFolder url="file://$MODULE_DIR$/target" />
     </content>
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="Cargo &lt;rust_grep&gt;" level="project" />
     <orderEntry type="library" name="Rust &lt;rust_grep&gt;" level="project" />
+    <orderEntry type="library" name="Cargo &lt;rust_grep&gt;" level="project" />
   </component>
 </module>
