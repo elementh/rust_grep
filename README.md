@@ -1,6 +1,12 @@
 # rust_grep
 learning-rust: grep implemented in rust
 
+## Usage
+
+Case Sensitive grep: `cargo run we poem.txt`
+
+Case insensitive grep: `CASE_INSENSITIVE=1 cargo run we poem.txt`
+
 ## License
 
 The MIT License (MIT)
