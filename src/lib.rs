@@ -17,6 +17,7 @@ pub fn run(config: Config) -> Result<(), Box<Error>> {
 pub struct Config {
     pub search: String,
     pub filename: String,
+    // pub case_sensitive: bool,
 }
 
 impl Config {
@@ -46,20 +47,48 @@ fn grep<'a>(search: &str, content: &'a str) -> Vec<&'a str> {
     results
 }
 
+fn grep_case_insensitive<'a>(search: &str, content: &'a str) -> Vec<&'a str> {
+    let search = search.to_lowercase();
+    let mut results = Vec::new();
+    
+    for line in content.lines() {
+        if line.to_lowercase().contains(&search) {
+            results.push(line);
+        }
+    }
+    
+    results
+}
+
 #[cfg(test)]
 mod test {
     use grep;
+    use grep_case_insensitive;
 
     #[test]
-    fn one_result() {
+    fn case_sensitive() {
         let search = "duct";
         let content = "\
 Rust:
 safe, fast, productive.
-Pick three.";
+Pick three.
+Duct tape.";
         assert_eq!(
         vec!["safe, fast, productive."],
         grep(search, content)
+        )
+    }
+    #[test]
+    fn case_insensitive() {
+        let search = "rust";
+        let content = "\
+Rust:
+safe, fast, productive.
+Pick three.
+Trust me.";
+        assert_eq!(
+            vec!["Rust:", "Trust me."],
+            grep_case_insensitive(search, content)
         )
     }
 }
