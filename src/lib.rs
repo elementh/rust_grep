@@ -1,14 +1,19 @@
 use std::fs::File;
 use std::io::prelude::*;
 use std::error::Error;
+use std::env;
 
 pub fn run(config: Config) -> Result<(), Box<Error>> {
     let mut file = File::open(config.filename)?;
     let mut content = String::new();
     file.read_to_string(&mut content)?;
 //    println!("With text:\n{}", content);
-
-    for line in grep(&config.search, &content) {
+    let results = if config.case_sensitive {
+        grep(&config.search, &content)
+    } else {
+        grep_case_insensitive(&config.search, &content)
+    };
+    for line in results{
         println!("{}", line);
     }
     Ok(())
@@ -17,7 +22,7 @@ pub fn run(config: Config) -> Result<(), Box<Error>> {
 pub struct Config {
     pub search: String,
     pub filename: String,
-    // pub case_sensitive: bool,
+    pub case_sensitive: bool,
 }
 
 impl Config {
@@ -27,10 +32,19 @@ impl Config {
         }
         let search = args[1].clone();
         let filename = args[2].clone();
+        
+        let mut case_sensitive = true;
+        
+        for (name, _) in env::vars() {
+            if name == "CASE_INSENSITIVE" {
+                case_sensitive = false;
+            }
+        }
 
         Ok(Config {
             search: search,
             filename: filename,
+            case_sensitive: case_sensitive
         })
     }
 }
