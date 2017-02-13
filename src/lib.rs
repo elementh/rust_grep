@@ -30,3 +30,33 @@ impl Config {
         })
     }
 }
+
+fn grep<'a>(search: &str, content: &'a str) -> Vec<&'a str> {
+    let mut results = Vec::new();
+
+    for line in content.lines() {
+        if line.contains(search) {
+            results.push(line);
+        }
+    }
+
+    results
+}
+
+#[cfg(test)]
+mod test {
+    use grep;
+
+    #[test]
+    fn one_result() {
+        let search = "duct";
+        let content = "\
+Rust:
+safe, fast, productive.
+Pick three.";
+        assert_eq!(
+        vec!["safe, fast, productive."],
+        grep(search, content)
+        )
+    }
+}
