@@ -26,13 +26,17 @@ pub struct Config {
 }
 
 impl Config {
-    pub fn new(args: &[String]) -> Result<Config, &'static str> {
-        if args.len() < 3 {
-            return Err("not enough arguments")
-        }
-        let search = args[1].clone();
-        let filename = args[2].clone();
+    pub fn new(mut args: std::env::Args) -> Result<Config, &'static str> {
+        args.next();
         
+        let search = match args.next() {
+            Some(arg) => arg,
+            None => return Err("didn't get a search string")
+        };
+        let filename = match args.next() {
+            Some(arg) => arg,
+            None => return Err("didn't get a file name")
+        };
         let mut case_sensitive = true;
         
         for (name, _) in env::vars() {
@@ -50,28 +54,16 @@ impl Config {
 }
 
 fn grep<'a>(search: &str, content: &'a str) -> Vec<&'a str> {
-    let mut results = Vec::new();
-
-    for line in content.lines() {
-        if line.contains(search) {
-            results.push(line);
-        }
-    }
-
-    results
+    content.lines()
+        .filter(|line| line.contains(search))
+        .collect()
 }
 
 fn grep_case_insensitive<'a>(search: &str, content: &'a str) -> Vec<&'a str> {
     let search = search.to_lowercase();
-    let mut results = Vec::new();
-    
-    for line in content.lines() {
-        if line.to_lowercase().contains(&search) {
-            results.push(line);
-        }
-    }
-    
-    results
+    content.lines()
+        .filter(|line| line.to_lowercase().contains(&search))
+        .collect()
 }
 
 #[cfg(test)]

@@ -8,9 +8,8 @@ use std::io::prelude::*;
 
 fn main() {
     let mut stderr = std::io::stderr();
-    let args: Vec<String> = env::args().collect();
-
-    let config = Config::new(&args).unwrap_or_else(|err| {
+    
+    let config = Config::new(env::args()).unwrap_or_else(|err| {
         writeln!(
             &mut stderr,
             "Problem parsing arguments: {}",
